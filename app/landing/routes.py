@@ -1,16 +1,10 @@
-from flask import render_template
+from flask import render_template, Response, request
+from datetime import datetime
 from app.landing import landing_bp
 
-@landing_bp.route('/', methods=['GET'])
-def home():
-    text = 'This is the landing route!'
-    return render_template('landing.html', content=text)
+@landing_bp.route('/write', methods=['POST'])
+def write():
+    no_spaces = request.get_data(as_text=True).replace("host=", "").replace("region=", "").replace(" ", ",").replace("=", ",")
 
-@landing_bp.route('/info', methods=['GET'])
-def info():
-    text = 'This is the info route! Here is a kitten:'
-    return render_template('info.html', content=text)
-
-@landing_bp.route('/info', methods=['PUT'])
-def update_info():
-    return 'You have made a put request!'
+    print(f'{datetime.now()},{request.args["db"]},{no_spaces}')
+    return Response("", 200)
